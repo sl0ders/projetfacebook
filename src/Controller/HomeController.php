@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Post;
 use App\Form\PostType;
 use App\Repository\PostRepository;
+use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -38,7 +39,7 @@ class HomeController extends AbstractController
         $formPost = $this->createForm(PostType::class,$post);
         $formPost->handleRequest($request);
         if ($formPost->isSubmitted() && $formPost->isValid()){
-            $post->setCreatedAt(new \DateTime());
+            $post->setCreatedAt(new DateTime());
             $post->setAuthor($this->getUser());
             $this->em->persist($post);
             $this->em->flush();

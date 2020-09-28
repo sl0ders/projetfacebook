@@ -10,7 +10,7 @@ use Doctrine\Migrations\AbstractMigration;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-final class Version20200928125020 extends AbstractMigration
+final class Version20200928204946 extends AbstractMigration
 {
     public function getDescription() : string
     {
@@ -20,16 +20,14 @@ final class Version20200928125020 extends AbstractMigration
     public function up(Schema $schema) : void
     {
         // this up() migration is auto-generated, please modify it to your needs
-        $this->addSql('ALTER TABLE post ADD author_id INT DEFAULT NULL');
-        $this->addSql('ALTER TABLE post ADD CONSTRAINT FK_5A8A6C8DF675F31B FOREIGN KEY (author_id) REFERENCES user (id)');
-        $this->addSql('CREATE INDEX IDX_5A8A6C8DF675F31B ON post (author_id)');
+        $this->addSql('ALTER TABLE post ADD updated_at DATETIME NOT NULL');
+        $this->addSql('ALTER TABLE user CHANGE roles roles LONGTEXT NOT NULL COMMENT \'(DC2Type:json)\'');
     }
 
     public function down(Schema $schema) : void
     {
         // this down() migration is auto-generated, please modify it to your needs
-        $this->addSql('ALTER TABLE post DROP FOREIGN KEY FK_5A8A6C8DF675F31B');
-        $this->addSql('DROP INDEX IDX_5A8A6C8DF675F31B ON post');
-        $this->addSql('ALTER TABLE post DROP author_id');
+        $this->addSql('ALTER TABLE post DROP updated_at');
+        $this->addSql('ALTER TABLE user CHANGE roles roles LONGTEXT CHARACTER SET utf8mb4 NOT NULL COLLATE `utf8mb4_bin`');
     }
 }

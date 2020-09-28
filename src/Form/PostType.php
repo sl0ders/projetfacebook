@@ -11,6 +11,7 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Vich\UploaderBundle\Entity\File;
+use Vich\UploaderBundle\Form\Type\VichImageType;
 
 class PostType extends AbstractType
 {
@@ -26,7 +27,7 @@ class PostType extends AbstractType
                     "placeholder" => "Ecrire..."
                 ]
             ])
-            ->add('picture', File::class, [
+            ->add('filePicture', VichImageType::class, [
                 'label' => "Ajouter une photo ?",
             ])
             ->add('submit', SubmitType::class, [

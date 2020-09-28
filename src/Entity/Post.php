@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\PostRepository;
+use DateTime;
+use DateTimeInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -12,6 +14,7 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
 /**
  * @ORM\Entity(repositoryClass=PostRepository::class)
+ * @Vich\Uploadable()
  */
 class Post
 {
@@ -39,12 +42,11 @@ class Post
 
     /**
      * @var File
-     * @Assert\File(mimeTypes={"jpg", "png", "jpeg"},
-     *      mimeTypesMessage="Format de photo non pris en charge",
+     * @Assert\File(
      *      maxSize="50000000k",
      *     maxSizeMessage="Image trop volumineuse"
      * )
-     * @Vich\UploadableField(mapping="$picture")
+     * @Vich\UploadableField(mapping="postPicture", fileNameProperty="picture")
      */
     private $filePicture;
 
@@ -62,6 +64,12 @@ class Post
      * @ORM\OneToMany(targetEntity=Reaction::class, mappedBy="post")
      */
     private $reactions;
+
+    /**
+     * @ORM\Column(type="datetime")
+     * @var DateTime
+     */
+    private $updatedAt;
 
     /**
      * @ORM\ManyToOne(targetEntity=User::class, inversedBy="posts")
@@ -103,12 +111,12 @@ class Post
         return $this;
     }
 
-    public function getCreatedAt(): ?\DateTimeInterface
+    public function getCreatedAt(): ?DateTimeInterface
     {
         return $this->createdAt;
     }
 
-    public function setCreatedAt(\DateTimeInterface $createdAt): self
+    public function setCreatedAt(DateTimeInterface $createdAt): self
     {
         $this->createdAt = $createdAt;
 
@@ -204,16 +212,35 @@ class Post
     /**
      * @return File
      */
-    public function getFilePicture(): File
+    public function getFilePicture()
     {
         return $this->filePicture;
     }
 
     /**
-     * @param File $filePicture
+     * @param File|null $picture
      */
-    public function setFilePicture(File $filePicture): void
+    public function setFilePicture(File $picture = null): void
     {
-        $this->filePicture = $filePicture;
+        $this->filePicture = $picture;
+        if ($picture) {
+            $this->updatedAt = new DateTime('now');
+        }
+    }
+
+    /**
+     * @return DateTime
+     */
+    public function getUpdatedAt(): DateTime
+    {
+        return $this->updatedAt;
+    }
+
+    /**
+     * @param DateTime $updatedAt
+     */
+    public function setUpdatedAt(DateTime $updatedAt): void
+    {
+        $this->updatedAt = $updatedAt;
     }
 }
