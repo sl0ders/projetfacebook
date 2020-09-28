@@ -1,0 +1,24 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Page d'accueil{% endblock %}
+
+{% block body %}
+    <div class="container mt-5">
+        {{ form_start(form) }}
+        {{ form_end(form) }}
+        {% for post in posts %}
+            <div class="card m-3">
+                {{ vich_uploader_asset(post.filePicture, "postPicture") }}
+                <div class="card-header">
+                    <h2>{{ post.title }}</h2>
+                </div>
+                <div class="card-body">
+                    <p>{{ post.content }}</p>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+    <div class="navigation">
+        {{ knp_pagination_render(posts) }}
+    </div>
+{% endblock %}
