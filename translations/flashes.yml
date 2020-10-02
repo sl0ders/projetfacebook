@@ -1,0 +1,5 @@
+success: "Félicitation !"
+warning: "Attention !"
+danger: "Erreur !"
+flashes:
+

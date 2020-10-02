@@ -3,24 +3,150 @@
 {% block title %}Page d'accueil{% endblock %}
 
 {% block body %}
-    <div class="container mt-5">
-        {{ form_start(form) }}
-        {{ form_end(form) }}
-        {% for post in posts %}
-            <div class="card m-3">
-                {% if post.picture is defined %}
-                    <img src="{{ vich_uploader_asset(post, 'filePicture', "App\\Entity\\Post") }}" alt="">
-                {% endif %}
-                <div class="card-header">
-                    <h2>{{ post.title }}</h2>
+    {% set likeCount = 0 %}
+    <div class="container mt-1 d-flex justify-content-center flex-column">
+        <div class="col-md-9 m-auto">
+            <section id="searchForm" class="d-flex flex-column justify-content-around">
+                <div class="form-group d-flex m-auto">
+                    {{ form_start(formSearch) }}
+                    {{ form_row(formSearch.firstname, {'label': " ", 'attr': {'placeholder': 'Rechercher un ami...'}}) }}
+                    <button type="submit" class="btn btn-primary h-50 mt-4 ml-1">Rechercher</button>
+                    {{ form_end(formSearch) }}
                 </div>
+                <div class="m-auto pb-3">
+                    {% for user in users %}
+                        <a class="btn btn-sm btn-primary"
+                           href="{{ path('user_show', {'id': user.id}) }}">{{ user.fullname }}</a>
+                    {% endfor %}
+                </div>
+            </section>
+            <section id="new-post" class="card w-100 mb-4">
                 <div class="card-body">
-                    <p>{{ post.content }}</p>
+                    <div class="d-flex" style="border-radius: 40px; height: 45px">
+                        <img src="{{ vich_uploader_asset(app.user, "avatarFile", "App\\Entity\\User") }}"
+                             alt="{{ app.user.avatar }}" height="100%"
+                             style="margin-right: 5px; width: 45px; border-radius: 25px;"/>
+                        <label for="post-create"></label>
+                        <input placeholder=" Que voulez-vous dire, {{ app.user.firstname }} ?"
+                               type="text"
+                               id="post-create"
+                               class="w-100"
+                               style="border-radius: 25px; border: transparent ; background-color: #f0f2f5; cursor: pointer; font-size: 1.2em"
+                               data-toggle="modal"
+                               data-target="#exampleModalLong"/>
+                    </div>
+                    <hr>
                 </div>
-            </div>
-        {% endfor %}
+                {% include "Modal/_modalNewPost.html.twig" %}
+            </section>
+            {% for post in posts %}
+                <section id="show-post" class="card mb-4">
+                    {% for reaction in post.reactions %}
+                        {% if reaction.user == app.user %}
+                            {% set likeCount = 1 %}
+                        {% else %}
+                            {% set likeCount = 0 %}
+                        {% endif %}
+                    {% endfor %}
+                    <div class="card-header">
+                        <div class="identities d-flex">
+                            <div class="img d-flex" style="border-radius: 40px; height: 45px">
+                                <img src="{{ vich_uploader_asset(app.user, "avatarFile", "App\\Entity\\User") }}"
+                                     alt="{{ app.user.avatar }}" height="100%"
+                                     style="margin-right: 5px; width: 45px; border-radius: 25px;"/>
+                            </div>
+                            <div class="identity d-flex justify-content-between w-100"
+                                 style="font-size: 1.2em;margin-left: 10px;">
+                                <div class="">
+                                    <strong>{{ post.author.fullname }}</strong><br>
+                                    <em style="font-size: 0.8em;">{{ post.createdAt|format_datetime(locale='fr') }}</em>
+                                </div>
+                                {% if post.author == app.user %}
+                                    <div class="dropdown mr-2 d-flex align-items-center">
+                                        <button class="btn mr-2" type="button" id="dropdownParamButton"
+                                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            <i class="fas fa-ellipsis-v"></i>
+                                        </button>
+                                        <div class="dropdown-menu dropdown-menu-right"
+                                             aria-labelledby="dropdownParamButton">
+                                            <div class="dropdown-item"
+                                                 style="padding: 0;font-size: 0.9em;text-align: center">
+                                                <a href="{{ path('post_delete', {'id': post.id}) }}"
+                                                   class="btn text-black-50 text-decoration-none"> Supprimer</a>
+                                            </div>
+                                            <div class="dropdown-item"
+                                                 style="padding: 0;font-size: 0.9em;text-align: center">
+                                                <a href="{{ path('post_edit', {'id': post.id}) }}"
+                                                   class="btn text-black-50 text-decoration-none"> Modifier</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <p class="ml-3">{{ post.content }}</p>
+                    </div>
+                    {% if post.picture is defined %}
+                        <img src="{{ vich_uploader_asset(post, 'filePicture', "App\\Entity\\Post") }}" width="100%"
+                             alt="{{ post.content|slice(0,20) }}">
+                    {% endif %}
+                    <div class="card-body d-flex justify-content-between"
+                         title="{% for userlike in post.reactions %} {{ userlike.user.fullname }}, {% endfor %}">
+                        <div>
+                            <i class="far fa-thumbs-up" {% if likeCount == 1 %} style="color: #4080ff" {% else %} style="color:#9ea4a7" {% endif %}> {{ post.reactions|length }}</i>
+                        </div>
+                        <div>
+                            <a class=" text-black-50">{{ post.comments|length }} Commentaires</a>
+                        </div>
+                    </div>
+                    <div class="card-footer d-flex justify-content-around text-black-50">
+                        <div{% if likeCount == 1 %} style="color: #4080ff" {% else %} style="color: #3e3e3e" {% endif %}>
+                            <i class="far fa-thumbs-up"></i>
+                            {% if likeCount == 1 %}
+                                <a
+                                        href="{{ path('post_unLike', {'post': post.id, 'user': app.user.id}) }}">Je
+                                    n'aime
+                                    pas</a>
+                            {% else %}
+                                <a title="{% for userlike in post.reactions %}{{ userlike.user.fullname }}, {% endfor %}"
+                                   style="color:#9ea4a7"
+                                   href="{{ path('post_like', {'post': post.id, 'user': app.user.id}) }}">J'aime</a>
+                            {% endif %}
+                        </div>
+                        <a class="text-black-50" href="{{ path('comment_index', {"id": post.id}) }}">Commenter</a>
+                        <div>Partager</div>
+                    </div>
+                    <div class="card-comment">
+                        {% for comment in post.comments|slice(0, 4) %}
+                            <div class="card-body-comment">
+                                <div>
+                                    <strong>{{ comment.author.fullname }} <em> {{ comment.createdAt|format_datetime(locale='fr') }}</em></strong>
+                                    <div>{{ comment.content }}</div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                        {% if post.comments|length > 5 %}
+                            <p class="text-center click-plus">Voir plus ...</p>
+                        {% endif %}
+                        <div class="plus-comment">
+                            {% for comment in post.comments|slice(4,50) %}
+                                <div class="card-body-comment">
+                                    <div>
+                                        <strong>{{ comment.author.fullname }} <em> {{ comment.createdAt|format_datetime(locale='fr') }}</em></strong>
+                                        <div>{{ comment.content }}</div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </section>
+            {% endfor %}
+        </div>
+        <div class="navigation">
+            {{ knp_pagination_render(posts) }}
+        </div>
     </div>
-    <div class="navigation">
-        {{ knp_pagination_render(posts) }}
-    </div>
+{% endblock %}
+{% block javascripts %}
+    {{ parent() }}
 {% endblock %}

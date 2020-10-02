@@ -1,0 +1,58 @@
+<nav class="navbar navbar-expand-sm navbar-light bg-primary">
+    <a class="navbar-brand text-light" href="/">NetLink</a>
+    <button class="navbar-toggler d-lg-none" type="button" data-toggle="collapse" data-target="#collapsibleNavId"
+            aria-controls="collapsibleNavId"
+            aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="collapsibleNavId">
+        <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
+        </ul>
+        <div class="dropdown mr-2 d-flex align-items-center">
+            <button class="btn btn-primary mr-2" type="button" id="dropdownMenuButton"
+                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <i style="font-size: 1.5em" class="fas fa-user-friends"></i>
+                {% if userNotAccepted %}
+                    <strong class="text-danger" style="text-decoration: none; font-size: larger">°</strong>
+                {% endif %}
+            </button>
+
+            <a href="{{ path('app_logout') }}" class="mr-4"><i style="font-size: 1.5em" class="text-danger fas fa-sign-out-alt"></i></a>
+
+            <div class="dropdown-menu dropdown-menu-right" style="font-size: 0.9em;" aria-labelledby="dropdownMenuButton">
+                <em class="dropdown-item" style="font-size: 0.8em;text-align: center">Leurs demande d'amitié ({{ userNotAccepted|length }})</em>
+                {% if userNotAccepted %}
+                    {% for userNotPending in userNotAccepted %}
+                        <div class="d-flex dropdown-item">
+                            <a href="{{ path('user_show', {'id': userNotPending.id}) }}" style="text-decoration: none ; color: black;list-style: none" class="mr-1"><i style="font-size: 1em; color: #007bff " class="fas fa-user-friends"></i> {{ userNotPending.fullname }} </a>
+                            <a href="{{ path('friend_accept', {'friend':userNotPending.id}) }}" class="btn btn-success"
+                               style="max-height: 25px; font-size: 0.9em; padding: 2px ">Accepter</a>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+                <hr>
+                <em class="dropdown-item" style="font-size: 0.8em;text-align: center">Vos amis ({{ friends|length }})</em>
+                {% for friend in friends %}
+                        <a class="dropdown-item" href="{{ path('user_show', {'id': friend.id}) }}"><i style="font-size: 1em; color: #28a745 " class="fas fa-user-friends"></i> {{ friend.fullname }}</a>
+                {% endfor %}
+                <hr>
+                <em class="dropdown-item" style="font-size: 0.8em;text-align: center">Vos demande d'amitié ({{ myFriendsRequestNotAccepted|length }})</em>
+                {% for myFriendRequestNotAccepted in myFriendsRequestNotAccepted %}
+                    {% if myFriendRequestNotAccepted.fullname not in friends %}
+                        <div class="dropdown-item" style="list-style: none">
+                            <i style="font-size: 1em; color: #a73828" class="fas fa-user-friends"></i> {{ myFriendRequestNotAccepted.fullname }}
+                            <a class="btn btn-danger" href="{{ path('delete_friendship', {'friend': myFriendRequestNotAccepted.id}) }}" style="max-height: 25px; font-size: 0.9em; padding: 2px">En attente...</a>
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</nav>
+
+{% if userNotAccepted|length > 0 %}
+    <div class="d-flex justify-content-center">
+        <div class="text-center border p-2 w-25 bg-info" style="border-radius: 10px" data-toggle="modal" data-target="#modalFriendPendingTitle">Vous avez
+            actuellement {{ userNotAccepted|length }} demandes en amis</div>
+    </div>
+{% endif %}

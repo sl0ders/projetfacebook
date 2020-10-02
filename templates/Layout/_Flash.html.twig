@@ -1,0 +1,15 @@
+{% trans_default_domain 'flashes' %}
+
+{% for label, flashes in app.session.flashbag.all %}
+    {% for flash in flashes %}
+        <div class="row">
+            <div class="col-md-4 offset-4">
+                <div class="alert alert-{{ label }} alert-dismissible" role="alert">
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <i class="fa fa-times"></i> </button>
+                    <strong>{{ label|trans }} -- </strong> {{ flash|trans }}
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+{% endfor %}

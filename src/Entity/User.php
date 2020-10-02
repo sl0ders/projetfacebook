@@ -3,13 +3,18 @@
 namespace App\Entity;
 
 use App\Repository\UserRepository;
+use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Validator\Constraints as Assert;
+use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
 /**
  * @ORM\Entity(repositoryClass=UserRepository::class)
+ * @Vich\Uploadable
  */
 class User implements UserInterface
 {
@@ -19,6 +24,12 @@ class User implements UserInterface
      * @ORM\Column(type="integer")
      */
     private $id;
+
+    /**
+     * @ORM\Column(type="datetime")
+     * @var DateTime
+     */
+    private $updatedAt;
 
     /**
      * @ORM\Column(type="string", length=180, unique=true)
@@ -31,8 +42,15 @@ class User implements UserInterface
     private $roles = [];
 
     /**
-     * @var string The hashed password
-     * @ORM\Column(type="string")
+     * @Assert\Length(max=4096)
+     */
+    private $plainPassword;
+
+    /**
+     * The below length depends on the "algorithm" you use for encoding
+     * the password, but this works well with bcrypt.
+     *
+     * @ORM\Column(type="text")
      */
     private $password;
 
@@ -46,15 +64,11 @@ class User implements UserInterface
      */
     private $reactions;
 
-    /**
-     * @ORM\ManyToMany(targetEntity=Friend::class, mappedBy="user")
-     */
-    private $friends;
 
     /**
      * @ORM\Column(type="string", length=255)
      */
-    private $firtname;
+    private $firstname;
 
     /**
      * @ORM\Column(type="string", length=255)
@@ -66,12 +80,52 @@ class User implements UserInterface
      */
     private $posts;
 
+    /**
+     * @var File
+     * @Assert\File(
+     *      maxSize="50000000k",
+     *     maxSizeMessage="Image trop volumineuse"
+     * )
+     * @Vich\UploadableField(mapping="userAvatar", fileNameProperty="avatar")
+     */
+    private $avatarFile;
+
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
+    private $avatar;
+
+    /**
+     * The people who I think are my friends.
+     *
+     * @ORM\OneToMany(targetEntity="Friendship", mappedBy="user")
+     */
+    private $friends;
+
+    /**
+     * The people who think that I’m their friend.
+     *
+     * @ORM\OneToMany(targetEntity="Friendship", mappedBy="friend")
+     */
+    private $friendsWithMe;
+
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $is_validate;
+
+
     public function __construct()
     {
         $this->comments = new ArrayCollection();
         $this->reactions = new ArrayCollection();
-        $this->friends = new ArrayCollection();
         $this->posts = new ArrayCollection();
+        $this->friends = new ArrayCollection();
+        $this->friendsWithMe = new ArrayCollection();
+    }
+
+    public function fullname() {
+        return $this->lastname. " " . $this->firstname;
     }
 
     public function getId(): ?int
@@ -98,7 +152,7 @@ class User implements UserInterface
      */
     public function getUsername(): string
     {
-        return (string) $this->email;
+        return (string)$this->email;
     }
 
     /**
@@ -116,21 +170,6 @@ class User implements UserInterface
     public function setRoles(array $roles): self
     {
         $this->roles = $roles;
-
-        return $this;
-    }
-
-    /**
-     * @see UserInterface
-     */
-    public function getPassword(): string
-    {
-        return (string) $this->password;
-    }
-
-    public function setPassword(string $password): self
-    {
-        $this->password = $password;
 
         return $this;
     }
@@ -214,42 +253,14 @@ class User implements UserInterface
         return $this;
     }
 
-    /**
-     * @return Collection|Friend[]
-     */
-    public function getFriends(): Collection
+    public function getFirstname(): ?string
     {
-        return $this->friends;
+        return $this->firstname;
     }
 
-    public function addFriend(Friend $friend): self
+    public function setFirstname(string $firstname): self
     {
-        if (!$this->friends->contains($friend)) {
-            $this->friends[] = $friend;
-            $friend->addUser($this);
-        }
-
-        return $this;
-    }
-
-    public function removeFriend(Friend $friend): self
-    {
-        if ($this->friends->contains($friend)) {
-            $this->friends->removeElement($friend);
-            $friend->removeUser($this);
-        }
-
-        return $this;
-    }
-
-    public function getFirtname(): ?string
-    {
-        return $this->firtname;
-    }
-
-    public function setFirtname(string $firtname): self
-    {
-        $this->firtname = $firtname;
+        $this->firstname = $firstname;
 
         return $this;
     }
@@ -293,6 +304,120 @@ class User implements UserInterface
                 $post->setAuthor(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getAvatar(): ?string
+    {
+        return $this->avatar;
+    }
+
+    public function setAvatar(string $avatar): self
+    {
+        $this->avatar = $avatar;
+
+        return $this;
+    }
+
+    /**
+     * @return File
+     */
+    public function getAvatarFile()
+    {
+        return $this->avatarFile;
+    }
+
+
+    /**
+     * @return DateTime
+     */
+    public function getUpdatedAt()
+    {
+        return $this->updatedAt;
+    }
+
+    /**
+     * @param DateTime $updatedAt
+     */
+    public function setUpdatedAt(DateTime $updatedAt): void
+    {
+        $this->updatedAt = $updatedAt;
+    }
+
+    /**
+     * @param File|null $avatar
+     */
+    public function setAvatarFile(File $avatar = null): void
+    {
+        $this->avatarFile = $avatar;
+        if ($avatar) {
+            $this->updatedAt = new DateTime('now');
+        }
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getPlainPassword()
+    {
+        return $this->plainPassword;
+    }
+
+    /**
+     * @param mixed $plainPassword
+     */
+    public function setPlainPassword($plainPassword): void
+    {
+        $this->plainPassword = $plainPassword;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getPassword()
+    {
+        return $this->password;
+    }
+
+    /**
+     * @param mixed $password
+     */
+    public function setPassword($password): void
+    {
+        $this->password = $password;
+    }
+
+    public function addFriendship(Friendship $friendship)
+    {
+        $this->friends->add($friendship);
+        $friendship->friend->addFriendshipWithMe($friendship);
+    }
+
+    public function addFriendshipWithMe(Friendship $friendship)
+    {
+        $this->friendsWithMe->add($friendship);
+    }
+
+    public function addFriend(User $friend)
+    {
+        $fs = new Friendship();
+        $fs->setUser($this);
+        $fs->setFriend($friend);
+        // set defaults
+        $fs->setIsPending(true);
+
+        $this->addFriendship($fs);
+    }
+
+    public function getIsValidate(): ?bool
+    {
+        return $this->is_validate;
+    }
+
+    public function setIsValidate(bool $is_validate): self
+    {
+        $this->is_validate = $is_validate;
 
         return $this;
     }

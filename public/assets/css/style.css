@@ -1,0 +1,26 @@
+body {
+  background: #f0f2f5;
+}
+
+.card {
+  border-radius: 20px;
+}
+
+.card-header {
+  background-color: #f7f7f7;
+  border-top-left-radius: 20px !important;
+  border-top-right-radius: 20px !important;
+}
+
+.card-comment {
+  margin: 5px;
+}
+.card-comment .card-body-comment {
+  margin: 10px;
+  padding: 10px;
+  background-color: #e3e3e3;
+  border: transparent;
+  border-radius: 20px;
+}
+
+/*# sourceMappingURL=style.css.map */

@@ -1,0 +1,21 @@
+liip_imagine:
+    filter_sets:
+        thumb:
+            quality: 75
+            filters:
+                thumbnail: { size: [ 200,200 ],mode: outbound }
+
+        thumbmax:
+            quality: 75
+            filters:
+                thumbnail: { size: [ 1000,1000 ],mode: outbound }
+
+        thumbmedium:
+            quality: 75
+            filters:
+                thumbnail: { size: [ 450,450 ],mode: outbound }
+
+        thumbmin:
+            quality: 75
+            filters:
+                thumbnail: { size: [ 100,100 ],mode: outbound }

@@ -1,0 +1,21 @@
+{% extends "base.html.twig" %}
+{% block title %}
+
+{% endblock %}
+
+{% block body %}
+
+    {% include "Modal/_modalNewPost.html.twig" %}
+
+
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        $(document).ready(()=> {
+            $('.modal').modal();
+            $('#commentModal').modal('open');
+        })
+    </script>
+{% endblock %}

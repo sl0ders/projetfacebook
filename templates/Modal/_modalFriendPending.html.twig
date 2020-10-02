@@ -1,0 +1,22 @@
+<div class="modal fade" id="modalFriendPending" tabindex="-1" role="dialog" aria-labelledby="modalFriendPendingTitle"
+     aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalFriendPendingTitle">Demande d'amis en attente de validation</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">x</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                {% for userNotPending in userNotAccepted %}
+                    {% set friendId = userNotPending.id %}
+                    <div class="d-flex justify-content-between">
+                        <div style="list-style: none">{{ userNotPending.fullname }}</div>
+                        <a href="{{ path('friend_accept', {'friend': friendId}) }}" class="btn btn-success">Accepter</a>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>

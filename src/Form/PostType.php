@@ -18,9 +18,6 @@ class PostType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('title', TextType::class, [
-                'label' => "Titre du l'article"
-            ])
             ->add('content', TextareaType::class, [
                 'label' => " ",
                 "attr" => [
@@ -29,9 +26,7 @@ class PostType extends AbstractType
             ])
             ->add('filePicture', VichImageType::class, [
                 'label' => "Ajouter une photo ?",
-            ])
-            ->add('submit', SubmitType::class, [
-                'label' => "Poster"
+                'imagine_pattern' => "thumbmedium"
             ]);
     }
 

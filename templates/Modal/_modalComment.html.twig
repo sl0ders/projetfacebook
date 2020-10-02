@@ -1,0 +1,21 @@
+<div class="modal fade" id="commentModal" tabindex="-1" role="dialog" aria-labelledby="#commentModalTitle"
+     aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="#commentModalTitle">Ajout d'un commentaire</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">x</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form action="{{ path('comment_add', {'id': post.id}) }}" method="post">
+                    {{ form_start(formComment) }}
+                    {{ form_widget(formComment) }}
+                    {{ form_end(formComment) }}
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+

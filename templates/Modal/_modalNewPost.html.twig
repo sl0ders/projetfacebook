@@ -1,0 +1,21 @@
+<div class="modal fade" id="exampleModalLong" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">Créer une publication</h5>
+                <a href="/" type="button" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">x</span>
+                </a>
+            </div>
+            <div class="modal-body">
+                <img src="{{ vich_uploader_asset(app.user, "avatarFile", "App\\Entity\\User") }}"
+                     alt="{{ app.user.avatar }}" width="90" style="border-radius: 25px"/> {{ app.user.lastname }} {{ app.user.firstname }}
+                {{ form_start(form) }}
+                {{ form_row(form.content) }}
+                {{ form_row(form.filePicture) }}
+                <button class="btn btn-primary" type="submit">Poster</button>
+                {{ form_end(form) }}
+            </div>
+        </div>
+    </div>
+</div>
