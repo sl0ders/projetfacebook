@@ -39,8 +39,9 @@
                 </div>
                 {% include "Modal/_modalNewPost.html.twig" %}
             </section>
+            <section id="show-post">
             {% for post in posts %}
-                <section id="show-post" class="card mb-4">
+                <div class="card mb-4">
                     {% for reaction in post.reactions %}
                         {% if reaction.user == app.user %}
                             {% set likeCount = 1 %}
@@ -87,9 +88,11 @@
                         <p class="ml-3">{{ post.content }}</p>
                     </div>
                     {% if post.picture is defined %}
-                        <img src="{{ vich_uploader_asset(post, 'filePicture', "App\\Entity\\Post") }}" width="100%"
+                        <a href="{{ path('post_show', {'id': post.id}) }}">
+                        <img  src="{{ vich_uploader_asset(post, 'filePicture', "App\\Entity\\Post") }}" width="100%"
                              alt="{{ post.content|slice(0,20) }}">
                     {% endif %}
+                        </a>
                     <div class="card-body d-flex justify-content-between"
                          title="{% for userlike in post.reactions %} {{ userlike.user.fullname }}, {% endfor %}">
                         <div>
@@ -143,8 +146,9 @@
                             {% endfor %}
                         </div>
                     </div>
-                </section>
+                </div>
             {% endfor %}
+            </section>
         </div>
         <div class="navigation">
             {{ knp_pagination_render(posts) }}

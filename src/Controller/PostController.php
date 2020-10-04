@@ -6,6 +6,7 @@ namespace App\Controller;
 use App\Entity\Notification;
 use App\Entity\Post;
 use App\Entity\User;
+use App\Form\CommentType;
 use App\Form\PostType;
 use App\Repository\UserRepository;
 use DateTime;
@@ -26,15 +27,20 @@ class PostController extends abstractController
     /**
      * @Route("/show/{id}" ,name="post_show", requirements={"id":"\d+"})
      * @param Post $post
+     * @param Request $request
      * @param UserRepository $userRepository
      * @return Response
      */
-    public function show(Post $post, UserRepository $userRepository)
+    public function show(Post $post,Request $request, UserRepository $userRepository)
     {
+        $formComment = $this->createForm(CommentType::class);
+        $formComment->handleRequest($request);
         $friends = $userRepository->findFriend($this->getUser());
         return $this->render("post/show.html.twig", [
+
             "post" => $post,
-            "friends" => $friends
+            "friends" => $friends,
+            "formComment" => $formComment->createView()
         ]);
     }
 
@@ -85,6 +91,7 @@ class PostController extends abstractController
         $em = $this->getDoctrine()->getManager();
         $notif = new Notification();
         $notif->setPost($post)
+            ->setIsViewved(false)
             ->setReceiver($user)
             ->setSender($this->getUser())
             ->setCreatedAt(new DateTime());

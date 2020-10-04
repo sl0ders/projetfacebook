@@ -1,6 +1,7 @@
 {% set likeCount = 0 %}
-<div class="modal fade" id="modalPostshow" tabindex="-1" role="dialog" aria-labelledby="modalPostshowTitle" aria-hidden="true">
-    <div class="modal-dialog" role="document">
+<div class="modal fade" id="modalPostshow" tabindex="-1" role="dialog" aria-labelledby="modalPostshowTitle"
+     aria-hidden="true">
+    <div class="modal-dialog w-100" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="modalPostshowTitle">Article</h5>
@@ -8,6 +9,7 @@
                     <span aria-hidden="true">x</span>
                 </a>
             </div>
+
             <div class="modal-body">
                 <section id="show-post" class="card mb-4">
                     {% for reaction in post.reactions %}
@@ -17,96 +19,114 @@
                             {% set likeCount = 0 %}
                         {% endif %}
                     {% endfor %}
-                    <div class="card-header">
-                        <div class="identities d-flex">
-                            <div class="img d-flex" style="border-radius: 40px; height: 45px">
-                                <img src="{{ vich_uploader_asset(app.user, "avatarFile", "App\\Entity\\User") }}"
-                                     alt="{{ app.user.avatar }}" height="100%"
-                                     style="margin-right: 5px; width: 45px; border-radius: 25px;"/>
-                            </div>
-                            <div class="identity d-flex justify-content-between w-100"
-                                 style="font-size: 1.2em;margin-left: 10px;">
-                                <div>
-                                    <strong>{{ post.author.fullname }}</strong><br>
-                                    <em style="font-size: 0.8em;">{{ post.createdAt|format_datetime(locale='fr') }}</em>
+                    <div class="d-flex">
+                        <div class="w-75">
+                            <div class="card-header">
+                                <div class="identities d-flex">
+                                    <div class="img d-flex" style="border-radius: 40px; height: 45px">
+                                        <img src="{{ vich_uploader_asset(app.user, "avatarFile", "App\\Entity\\User") }}"
+                                             alt="{{ app.user.avatar }}" height="100%"
+                                             style="margin-right: 5px; width: 45px; border-radius: 25px;"/>
+                                    </div>
+                                    <div class="identity d-flex justify-content-between w-100"
+                                         style="font-size: 1.1em;margin-left: 5px;">
+                                        <div>
+                                            <strong>{{ post.author.fullname }}</strong><br>
+                                            <em style="font-size: 0.8em;">{{ post.createdAt|format_datetime(locale='fr') }}</em>
+                                        </div>
+                                        {% if post.author == app.user %}
+                                            <div class="dropdown mr-2 d-flex align-items-center">
+                                                <button class="btn mr-2" type="button" id="dropdownParamButton"
+                                                        data-toggle="dropdown" aria-haspopup="true"
+                                                        aria-expanded="false">
+                                                    <i class="fas fa-ellipsis-v"></i>
+                                                </button>
+                                                <div class="dropdown-menu dropdown-menu-right"
+                                                     aria-labelledby="dropdownParamButton">
+                                                    <div class="dropdown-item"
+                                                         style="padding: 0;font-size: 0.8em;text-align: center">
+                                                        <a href="{{ path('post_delete', {'id': post.id}) }}"
+                                                           class="btn text-black-50 text-decoration-none"> Supprimer</a>
+                                                    </div>
+                                                    <div class="dropdown-item"
+                                                         style="padding: 0;font-size: 0.8em;text-align: center">
+                                                        <a href="{{ path('post_edit', {'id': post.id}) }}"
+                                                           class="btn text-black-50 text-decoration-none"> Modifier</a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        {% endif %}
+                                    </div>
                                 </div>
-                                {% if post.author == app.user %}
-                                    <div class="dropdown mr-2 d-flex align-items-center">
-                                        <button class="btn mr-2" type="button" id="dropdownParamButton"
-                                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                            <i class="fas fa-ellipsis-v"></i>
-                                        </button>
-                                        <div class="dropdown-menu dropdown-menu-right"
-                                             aria-labelledby="dropdownParamButton">
-                                            <div class="dropdown-item"
-                                                 style="padding: 0;font-size: 0.9em;text-align: center">
-                                                <a href="{{ path('post_delete', {'id': post.id}) }}"
-                                                   class="btn text-black-50 text-decoration-none"> Supprimer</a>
-                                            </div>
-                                            <div class="dropdown-item"
-                                                 style="padding: 0;font-size: 0.9em;text-align: center">
-                                                <a href="{{ path('post_edit', {'id': post.id}) }}"
-                                                   class="btn text-black-50 text-decoration-none"> Modifier</a>
-                                            </div>
+                                <p class="ml-3">{{ post.content }}</p>
+                            </div>
+                            {% if post.picture is defined %}
+                                <img src="{{ vich_uploader_asset(post, 'filePicture', "App\\Entity\\Post") }}"
+                                     width="100%"
+                                     alt="{{ post.content|slice(0,20) }}">
+                            {% endif %}
+
+                            <div class="card-body d-flex justify-content-between"
+                                 title="{% for userlike in post.reactions %} {{ userlike.user.fullname }}, {% endfor %}">
+                                <div>
+                                    <i class="far fa-thumbs-up" {% if likeCount == 1 %} style="color: #4080ff" {% else %} style="color:#9ea4a7" {% endif %}> {{ post.reactions|length }}</i>
+                                </div>
+                                <div>
+                                    <a class=" text-black-50">{{ post.comments|length }} Commentaires</a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="w-25 pt-4">
+                            <div class="d-flex justify-content-around text-black-50" style="margin-bottom: 40px;">
+                                <div {% if likeCount == 1 %}style="color: #4080ff" {% else %} style="color: #3e3e3e" {% endif %}>
+                                    <i class="far fa-thumbs-up"></i>
+                                    {% if likeCount == 1 %}
+                                        <a href="{{ path('post_unLike', {'post': post.id, 'user': app.user.id}) }}">Je
+                                            n'aime
+                                            pas</a>
+                                    {% else %}
+                                        <a title="{% for userlike in post.reactions %}{{ userlike.user.fullname }}, {% endfor %}"
+                                           style="color:#9ea4a7"
+                                           href="{{ path('post_like', {'post': post.id, 'user': app.user.id}) }}">J'aime</a>
+                                    {% endif %}
+                                </div>
+                                <a class="text-black-50"
+                                   href="{{ path('comment_index', {"id": post.id}) }}">Commenter</a>
+                                <a class="text-black-50" type="button" data-toggle="modal"
+                                   data-target="#modalshare">Partager</a>
+                                {% include "Modal/_modalFriends.html.twig" %}
+                            </div>
+                            <div class="card-comment">
+                                {% for comment in post.comments|slice(0, 4) %}
+                                    <div class="card-body-comment">
+                                        <div>
+                                            <strong>{{ comment.author.fullname }}
+                                                <em> {{ comment.createdAt|format_datetime(locale='fr') }}</em></strong>
+                                            <div>{{ comment.content }}</div>
                                         </div>
                                     </div>
+                                {% endfor %}
+                                {% if post.comments|length > 5 %}
+                                    <p class="text-center click-plus">Voir plus ...</p>
                                 {% endif %}
-                            </div>
-                        </div>
-                        <p class="ml-3">{{ post.content }}</p>
-                    </div>
-                    {% if post.picture is defined %}
-                        <img src="{{ vich_uploader_asset(post, 'filePicture', "App\\Entity\\Post") }}" width="100%"
-                             alt="{{ post.content|slice(0,20) }}">
-                    {% endif %}
-                    <div class="card-body d-flex justify-content-between"
-                         title="{% for userlike in post.reactions %} {{ userlike.user.fullname }}, {% endfor %}">
-                        <div>
-                            <i class="far fa-thumbs-up" {% if likeCount == 1 %} style="color: #4080ff" {% else %} style="color:#9ea4a7" {% endif %}> {{ post.reactions|length }}</i>
-                        </div>
-                        <div>
-                            <a class=" text-black-50">{{ post.comments|length }} Commentaires</a>
-                        </div>
-                    </div>
-                    <div class="card-footer d-flex justify-content-around text-black-50">
-                        <div{% if likeCount == 1 %} style="color: #4080ff" {% else %} style="color: #3e3e3e" {% endif %}>
-                            <i class="far fa-thumbs-up"></i>
-                            {% if likeCount == 1 %}
-                                <a href="{{ path('post_unLike', {'post': post.id, 'user': app.user.id}) }}">Je n'aime
-                                    pas</a>
-                            {% else %}
-                                <a title="{% for userlike in post.reactions %}{{ userlike.user.fullname }}, {% endfor %}"
-                                   style="color:#9ea4a7"
-                                   href="{{ path('post_like', {'post': post.id, 'user': app.user.id}) }}">J'aime</a>
-                            {% endif %}
-                        </div>
-                        <a class="text-black-50" href="{{ path('comment_index', {"id": post.id}) }}">Commenter</a>
-                        <a class="text-black-50" type="button" data-toggle="modal" data-target="#modalshare">Partager</a>
-                        {% include "Modal/_modalFriends.html.twig" %}
-                    </div>
-                    <div class="card-comment">
-                        {% for comment in post.comments|slice(0, 4) %}
-                            <div class="card-body-comment">
-                                <div>
-                                    <strong>{{ comment.author.fullname }}
-                                        <em> {{ comment.createdAt|format_datetime(locale='fr') }}</em></strong>
-                                    <div>{{ comment.content }}</div>
-                                </div>
-                            </div>
-                        {% endfor %}
-                        {% if post.comments|length > 5 %}
-                            <p class="text-center click-plus">Voir plus ...</p>
-                        {% endif %}
-                        <div class="plus-comment">
-                            {% for comment in post.comments|slice(4,50) %}
-                                <div class="card-body-comment">
-                                    <div>
-                                        <strong>{{ comment.author.fullname }}
-                                            <em> {{ comment.createdAt|format_datetime(locale='fr') }}</em></strong>
-                                        <div>{{ comment.content }}</div>
+                                <div class="plus-comment">
+                                    {% for comment in post.comments|slice(4,50) %}
+                                        <div class="card-body-comment">
+                                            <div>
+                                                <strong>{{ comment.author.fullname }}
+                                                    <em> {{ comment.createdAt|format_datetime(locale='fr') }}</em></strong>
+                                                <div>{{ comment.content }}</div>
+                                            </div>
+
+                                        </div>
+                                    {% endfor %}
+                                    <div class="commentForm">
+                                        {{ form_start(formComment) }}
+                                        {{ form_widget(formComment) }}
+                                        {{ form_end(formComment) }}
                                     </div>
                                 </div>
-                            {% endfor %}
+                            </div>
                         </div>
                     </div>
                 </section>

@@ -39,6 +39,11 @@ class Notification
      */
     private $post;
 
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $is_viewved;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -88,6 +93,18 @@ class Notification
     public function setPost(?post $post): self
     {
         $this->post = $post;
+
+        return $this;
+    }
+
+    public function getIsViewved(): ?bool
+    {
+        return $this->is_viewved;
+    }
+
+    public function setIsViewved(bool $is_viewved): self
+    {
+        $this->is_viewved = $is_viewved;
 
         return $this;
     }

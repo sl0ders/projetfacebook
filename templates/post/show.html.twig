@@ -1,9 +1,19 @@
 {% extends 'base.html.twig' %}
 
 {% block title %}{% endblock %}
+{% block stylesheets %}
+    <style>
+        .modalshare {
+            display: none!important;
+        }
+        .modal-dialog {
+            max-width: 80%;!important;
+        }
+    </style>
+{% endblock %}
 
 {% block body %}
-{%  include "Modal/_modalPostShow.html.twig" %}
+{%  include "Modal/_modalPostShow.html.twig" with formComment %}
 {% endblock %}
 {% block javascripts %}
     {{ parent() }}
