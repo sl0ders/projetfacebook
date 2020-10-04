@@ -114,6 +114,11 @@ class User implements UserInterface
      */
     private $is_validate;
 
+    /**
+     * @ORM\OneToMany(targetEntity=Notification::class, mappedBy="sender", orphanRemoval=true)
+     */
+    private $notifications;
+
 
     public function __construct()
     {
@@ -122,6 +127,7 @@ class User implements UserInterface
         $this->posts = new ArrayCollection();
         $this->friends = new ArrayCollection();
         $this->friendsWithMe = new ArrayCollection();
+        $this->notifications = new ArrayCollection();
     }
 
     public function fullname() {
@@ -418,6 +424,37 @@ class User implements UserInterface
     public function setIsValidate(bool $is_validate): self
     {
         $this->is_validate = $is_validate;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Notification[]
+     */
+    public function getNotifications(): Collection
+    {
+        return $this->notifications;
+    }
+
+    public function addNotification(Notification $notification): self
+    {
+        if (!$this->notifications->contains($notification)) {
+            $this->notifications[] = $notification;
+            $notification->setSender($this);
+        }
+
+        return $this;
+    }
+
+    public function removeNotification(Notification $notification): self
+    {
+        if ($this->notifications->contains($notification)) {
+            $this->notifications->removeElement($notification);
+            // set the owning side to null (unless already changed)
+            if ($notification->getSender() === $this) {
+                $notification->setSender(null);
+            }
+        }
 
         return $this;
     }

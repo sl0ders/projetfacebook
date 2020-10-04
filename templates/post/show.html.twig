@@ -1,0 +1,17 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{% endblock %}
+
+{% block body %}
+{%  include "Modal/_modalPostShow.html.twig" %}
+{% endblock %}
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+    $(document).ready(()=> {
+        $('.modal').modal();
+        $('#modalPostshow').modal('open');
+    })
+</script>
+{% endblock %}
+

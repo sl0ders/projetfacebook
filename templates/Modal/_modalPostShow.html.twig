@@ -1,45 +1,14 @@
-{% extends 'base.html.twig' %}
-
-{% block title %}Page d'accueil{% endblock %}
-
-{% block body %}
-    {% set likeCount = 0 %}
-    <div class="container mt-1 d-flex justify-content-center flex-column">
-        <div class="col-md-9 m-auto">
-            <section id="searchForm" class="d-flex flex-column justify-content-around">
-                <div class="form-group d-flex m-auto">
-                    {{ form_start(formSearch) }}
-                    {{ form_row(formSearch.firstname, {'label': " ", 'attr': {'placeholder': 'Rechercher un ami...'}}) }}
-                    <button type="submit" class="btn btn-primary h-50 mt-4 ml-1">Rechercher</button>
-                    {{ form_end(formSearch) }}
-                </div>
-                <div class="m-auto pb-3">
-                    {% for user in users %}
-                        <a class="btn btn-sm btn-primary"
-                           href="{{ path('user_show', {'id': user.id}) }}">{{ user.fullname }}</a>
-                    {% endfor %}
-                </div>
-            </section>
-            <section id="new-post" class="card w-100 mb-4">
-                <div class="card-body">
-                    <div class="d-flex" style="border-radius: 40px; height: 45px">
-                        <img src="{{ vich_uploader_asset(app.user, "avatarFile", "App\\Entity\\User") }}"
-                             alt="{{ app.user.avatar }}" height="100%"
-                             style="margin-right: 5px; width: 45px; border-radius: 25px;"/>
-                        <label for="post-create"></label>
-                        <input placeholder=" Que voulez-vous dire, {{ app.user.firstname }} ?"
-                               type="text"
-                               id="post-create"
-                               class="w-100"
-                               style="border-radius: 25px; border: transparent ; background-color: #f0f2f5; cursor: pointer; font-size: 1.2em"
-                               data-toggle="modal"
-                               data-target="#modalPost"/>
-                    </div>
-                    <hr>
-                </div>
-                {% include "Modal/_modalNewPost.html.twig" %}
-            </section>
-            {% for post in posts %}
+{% set likeCount = 0 %}
+<div class="modal fade" id="modalPostshow" tabindex="-1" role="dialog" aria-labelledby="modalPostshowTitle" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalPostshowTitle">Article</h5>
+                <a href="/" type="button" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">x</span>
+                </a>
+            </div>
+            <div class="modal-body">
                 <section id="show-post" class="card mb-4">
                     {% for reaction in post.reactions %}
                         {% if reaction.user == app.user %}
@@ -111,11 +80,8 @@
                                    href="{{ path('post_like', {'post': post.id, 'user': app.user.id}) }}">J'aime</a>
                             {% endif %}
                         </div>
-
                         <a class="text-black-50" href="{{ path('comment_index', {"id": post.id}) }}">Commenter</a>
-
-                        <a class="text-black-50" type="button" data-toggle="modal" data-target="#modalshares">Partager</a>
-
+                        <a class="text-black-50" type="button" data-toggle="modal" data-target="#modalshare">Partager</a>
                         {% include "Modal/_modalFriends.html.twig" %}
                     </div>
                     <div class="card-comment">
@@ -144,13 +110,7 @@
                         </div>
                     </div>
                 </section>
-            {% endfor %}
-        </div>
-        <div class="navigation">
-            {{ knp_pagination_render(posts) }}
+            </div>
         </div>
     </div>
-{% endblock %}
-{% block javascripts %}
-    {{ parent() }}
-{% endblock %}
+</div>

@@ -2,7 +2,6 @@
 
 namespace App\Controller;
 
-use App\Entity\Comment;
 use App\Entity\Post;
 use App\Entity\Reaction;
 use App\Entity\User;
@@ -93,13 +92,14 @@ class HomeController extends AbstractController
             $request->query->getInt('page', 1),
             20
         );
-
+        $friends = $userRepository->findFriend($this->getUser());
         return $this->render("index.html.twig", [
             'formComment' => $formComment->createView(),
             'form' => $formPost->createView(),
             'formSearch' => $formSearch->createView(),
             "posts" => $pagePost,
-            "users" => $users
+            "users" => $users,
+            "friends" => $friends
         ]);
     }
 
