@@ -8,7 +8,7 @@
     <div class="collapse navbar-collapse" id="collapsibleNavId">
         <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
         </ul>
-        <div class="dropdown mr-2 d-flex align-items-center justify-content-around">
+        <div class="dropdown mr-2 w-25 d-flex align-items-center justify-content-end">
 
             {# start button friend management #}
             <button class="btn btn-primary" type="button" id="dropdownFriendButton"
@@ -49,14 +49,17 @@
 
             {# start button notification #}
             <button class="btn btn-primary" type="button" data-target="#notification" id="dropdownNotificationButton"
-                    data-toggle="collapse" aria-haspopup="true" aria-expanded="false">
+                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 <i style="font-size: 1.5em"  class="far fa-bell"></i>
-                <em class="bg-danger text-light" style="border-radius: 55px;padding: 5px; text-decoration: none; font-size: 0.7em">{% if userNotifications %}{{ userNotifications|length }}{% endif %}</em>
+                <span class="bg-danger text-light" style="border: brown 1px solid ; min-width:10px; padding-right: 5px ;padding-left: 3px; font-size: 0.5em;font-weight: bold; height: 10px; border-radius: 35px;">
+                    {% if userNotifications %}{{ userNotifications|length }}{% endif %}
+                </span>
             </button>
+
             <div class="dropdown-menu dropdown-menu-right" id="notification" style="font-size: 0.9em;" aria-labelledby="dropdownNotificationButton">
                 {% for userNotification in userNotifications %}
-                    <div class="dropdown-item w-25">
-                        <a class="text-black-50 text-decoration-none" style="background-color:rgba(155,174,222,0.5);" href="{{ path('post_show', {'id': userNotification.post.id}) }}">
+                    <div style="background-color:rgba(155,174,222,0.5);" class="dropdown-item">
+                        <a class="text-black-50 text-decoration-none" href="{{ path('post_show', {'id': userNotification.post.id}) }}">
                             {{ userNotification.sender.fullname }} <br> vous a notifié sur une publication</a>
                     </div>
                 {% endfor %}
