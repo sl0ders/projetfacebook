@@ -10,33 +10,15 @@
         </ul>
         <div class="dropdown mr-2 d-flex align-items-center justify-content-around">
 
+            {# start button friend management #}
             <button class="btn btn-primary" type="button" id="dropdownFriendButton"
-                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    data-toggle="dropdown" data-target="friendManagement" aria-haspopup="true" aria-expanded="false">
                 <i style="font-size: 1.5em" class="fas fa-user-friends"></i>
                 {% if userNotAccepted %}
                     <strong class="text-danger" style="text-decoration: none; font-size: larger">°</strong>
                 {% endif %}
             </button>
-
-            <button class="btn btn-primary" type="button" id="dropdownNotificationButton"
-                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                <i style="font-size: 1.5em"  class="far fa-bell"></i>
-                    <strong class="bg-danger text-light" style="border-radius: 55px;padding: 5px; text-decoration: none; font-size: 0.7em">{% if userNotifications %}{{ userNotifications|length }}{% endif %}</strong>
-            </button>
-
-            <a class="btn btn-primary" href="{{ path('app_logout') }}">
-                <i style="font-size: 1.5em" class="text-danger fas fa-sign-out-alt"></i>
-            </a>
-
-            <div class="dropdown-menu dropdown-notification dropdown-menu-right" style="font-size: 0.9em;background-color:rgba(155,174,222,0.5);" aria-labelledby="dropdownNotificationButton">
-                {% for userNotification in userNotifications %}
-                    <div class="dropdown-item w-25"">
-                        <a class="text-black-50 text-decoration-none" style="background-color:rgba(155,174,222,0.5);" href="{{ path('post_show', {'id': userNotification.post.id}) }}">
-                            {{ userNotification.sender.fullname }} <br> vous a notifié sur une publication</a>
-                    </div>
-                {% endfor %}
-            </div>
-            <div class="dropdown-menu dropdown-menu-right" style="font-size: 0.9em;" aria-labelledby="dropdownFriendButton">
+            <div class="dropdown-menu dropdown-menu-right" id="friendManagement" style="font-size: 0.9em;" aria-labelledby="dropdownFriendButton">
                 <em class="dropdown-item" style="font-size: 0.8em;text-align: center">Leurs demande d'amitié ({{ userNotAccepted|length }})</em>
                 {% if userNotAccepted %}
                     {% for userNotPending in userNotAccepted %}
@@ -50,7 +32,7 @@
                 <hr>
                 <em class="dropdown-item" style="font-size: 0.8em;text-align: center">Vos amis ({{ friends|length }})</em>
                 {% for friend in friends %}
-                        <a class="dropdown-item" href="{{ path('user_show', {'id': friend.id}) }}"><i style="font-size: 1em; color: #28a745 " class="fas fa-user-friends"></i> {{ friend.fullname }}</a>
+                    <a class="dropdown-item" href="{{ path('user_show', {'id': friend.id}) }}"><i style="font-size: 1em; color: #28a745 " class="fas fa-user-friends"></i> {{ friend.fullname }}</a>
                 {% endfor %}
                 <hr>
                 <em class="dropdown-item" style="font-size: 0.8em;text-align: center">Vos demande d'amitié ({{ myFriendsRequestNotAccepted|length }})</em>
@@ -63,6 +45,30 @@
                     {% endif %}
                 {% endfor %}
             </div>
+            {# end button friend management #}
+
+            {# start button notification #}
+            <button class="btn btn-primary" type="button" data-target="#notification" id="dropdownNotificationButton"
+                    data-toggle="collapse" aria-haspopup="true" aria-expanded="false">
+                <i style="font-size: 1.5em"  class="far fa-bell"></i>
+                <em class="bg-danger text-light" style="border-radius: 55px;padding: 5px; text-decoration: none; font-size: 0.7em">{% if userNotifications %}{{ userNotifications|length }}{% endif %}</em>
+            </button>
+            <div class="dropdown-menu dropdown-menu-right" id="notification" style="font-size: 0.9em;" aria-labelledby="dropdownNotificationButton">
+                {% for userNotification in userNotifications %}
+                    <div class="dropdown-item w-25">
+                        <a class="text-black-50 text-decoration-none" style="background-color:rgba(155,174,222,0.5);" href="{{ path('post_show', {'id': userNotification.post.id}) }}">
+                            {{ userNotification.sender.fullname }} <br> vous a notifié sur une publication</a>
+                    </div>
+                {% endfor %}
+            </div>
+            {# end button notification #}
+
+            {# start button disconnect #}
+            <a class="btn btn-primary" href="{{ path('app_logout') }}">
+                <i style="font-size: 1.5em" class="text-danger fas fa-sign-out-alt"></i>
+            </a>
+            {# end button disconnect #}
+
         </div>
     </div>
 </nav>

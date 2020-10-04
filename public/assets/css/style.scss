@@ -6,6 +6,10 @@ body {
   border-radius: 20px;
 }
 
+.notification:hover .notification{
+  background-color: #4e555b!important;
+}
+
 .card-header {
   background-color: #f7f7f7;
   border-top-left-radius: 20px !important;
@@ -14,6 +18,7 @@ body {
 
 .card-comment {
   margin: 5px;
+
   .card-body-comment {
     margin: 10px;
     padding: 10px;
