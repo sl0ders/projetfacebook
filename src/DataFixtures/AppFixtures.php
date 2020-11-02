@@ -35,6 +35,7 @@ class AppFixtures extends Fixture
     {
         $users = [];
         $posts = [];
+        $comments = [];
         $faker = Factory::create("fr_FR");
         $admin = new User();
         $password = $this->encoder->encodePassword($admin, "258790");
@@ -45,6 +46,7 @@ class AppFixtures extends Fixture
         $admin->setUpdatedAt(new \DateTime());
         $admin->setPassword($password);
         $admin->setAvatar("./images/avatar/numeric-wave.png");
+        $admin->setIsValidate($faker->boolean);
         $this->em->persist($admin);
 
         for ($i = 1; $i <= 30; $i++) {
@@ -56,6 +58,7 @@ class AppFixtures extends Fixture
             $user->setUpdatedAt(new \DateTime());
             $user->setEmail($faker->email);
             $user->setPassword($faker->password);
+            $user->setIsValidate($faker->boolean);
             $this->em->persist($user);
             array_push($users, $user);
         }
@@ -76,12 +79,16 @@ class AppFixtures extends Fixture
                 ->setCreatedAt(new \DateTime())
                 ->setContent($faker->text(300))
                 ->setPost($faker->randomElement($posts))
-                ->setAuthor($faker->randomElement($users));
+                ->setAuthor($faker->randomElement($users))
+                ->setIsEnabled($faker->boolean)
+                ->setParentId(0);
             $this->em->persist($comment);
         }
         for ($i = 1; $i <= count($users); $i++) {
-            $friend = new Friend();
-            $friend->addUser($faker->randomElement($users));
+            $friend = new Friendship();
+            $friend->setFriend($faker->randomElement($users));
+            $friend->setUser($faker->randomElement($users));
+            $friend->setIsPending($faker->boolean);
             $this->em->persist($friend);
         }
         for ($i = 1; $i <= 30; $i++) {
