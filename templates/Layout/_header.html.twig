@@ -18,29 +18,41 @@
                     <strong class="text-danger" style="text-decoration: none; font-size: larger">°</strong>
                 {% endif %}
             </button>
-            <div class="dropdown-menu dropdown-menu-right" id="friendManagement" style="font-size: 0.9em;" aria-labelledby="dropdownFriendButton">
-                <em class="dropdown-item" style="font-size: 0.8em;text-align: center">Leurs demande d'amitié ({{ userNotAccepted|length }})</em>
+            <div class="dropdown-menu dropdown-menu-right" id="friendManagement" style="font-size: 0.9em;"
+                 aria-labelledby="dropdownFriendButton">
+                <em class="dropdown-item" style="font-size: 0.8em;text-align: center">Leurs demande d'amitié
+                    ({{ userNotAccepted|length }})</em>
                 {% if userNotAccepted %}
                     {% for userNotPending in userNotAccepted %}
                         <div class="d-flex dropdown-item">
-                            <a href="{{ path('user_show', {'id': userNotPending.id}) }}" style="text-decoration: none ; color: black;list-style: none" class="mr-1"><i style="font-size: 1em; color: #007bff " class="fas fa-user-friends"></i> {{ userNotPending.fullname }} </a>
+                            <a href="{{ path('user_show', {'id': userNotPending.id}) }}"
+                               style="text-decoration: none ; color: black;list-style: none" class="mr-1"><i
+                                        style="font-size: 1em; color: #007bff "
+                                        class="fas fa-user-friends"></i> {{ userNotPending.fullname }} </a>
                             <a href="{{ path('friend_accept', {'friend':userNotPending.id}) }}" class="btn btn-success"
                                style="max-height: 25px; font-size: 0.9em; padding: 2px ">Accepter</a>
                         </div>
                     {% endfor %}
                 {% endif %}
                 <hr>
-                <em class="dropdown-item" style="font-size: 0.8em;text-align: center">Vos amis ({{ friends|length }})</em>
+                <em class="dropdown-item" style="font-size: 0.8em;text-align: center">Vos amis ({{ friends|length }}
+                    )</em>
                 {% for friend in friends %}
-                    <a class="dropdown-item" href="{{ path('user_show', {'id': friend.id}) }}"><i style="font-size: 1em; color: #28a745 " class="fas fa-user-friends"></i> {{ friend.fullname }}</a>
+                    <a class="dropdown-item" href="{{ path('user_show', {'id': friend.id}) }}"><i
+                                style="font-size: 1em; color: #28a745 "
+                                class="fas fa-user-friends"></i> {{ friend.fullname }}</a>
                 {% endfor %}
                 <hr>
-                <em class="dropdown-item" style="font-size: 0.8em;text-align: center">Vos demande d'amitié ({{ myFriendsRequestNotAccepted|length }})</em>
+                <em class="dropdown-item" style="font-size: 0.8em;text-align: center">Vos demande d'amitié
+                    ({{ myFriendsRequestNotAccepted|length }})</em>
                 {% for myFriendRequestNotAccepted in myFriendsRequestNotAccepted %}
                     {% if myFriendRequestNotAccepted.fullname not in friends %}
                         <div class="dropdown-item" style="list-style: none">
-                            <i style="font-size: 1em; color: #a73828" class="fas fa-user-friends"></i> {{ myFriendRequestNotAccepted.fullname }}
-                            <a class="btn btn-danger" href="{{ path('delete_friendship', {'friend': myFriendRequestNotAccepted.id}) }}" style="max-height: 25px; font-size: 0.9em; padding: 2px">En attente...</a>
+                            <i style="font-size: 1em; color: #a73828"
+                               class="fas fa-user-friends"></i> {{ myFriendRequestNotAccepted.fullname }}
+                            <a class="btn btn-danger"
+                               href="{{ path('delete_friendship', {'friend': myFriendRequestNotAccepted.id}) }}"
+                               style="max-height: 25px; font-size: 0.9em; padding: 2px">En attente...</a>
                         </div>
                     {% endif %}
                 {% endfor %}
@@ -50,16 +62,23 @@
             {# start button notification #}
             <button class="btn btn-primary" type="button" data-target="#notification" id="dropdownNotificationButton"
                     data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                <i style="font-size: 1.5em"  class="far fa-bell"></i>
-                <span class="bg-danger text-light" style="border: brown 1px solid ; min-width:10px; padding-right: 5px ;padding-left: 3px; font-size: 0.5em;font-weight: bold; height: 10px; border-radius: 35px;">
-                    {% if userNotifications %}{{ userNotifications|length }}{% endif %}
+                <i style="font-size: 1.5em" class="far fa-bell"></i>
+                {% if userNotifications %}
+                    <span class="bg-danger text-light"
+                          style="border: brown 1px solid ; min-width:10px; padding-right: 5px ;padding-left: 3px; font-size: 0.5em;font-weight: bold; height: 10px; border-radius: 35px;">
+                   {{ userNotifications|length }}
                 </span>
+                {% endif %}
             </button>
 
-            <div class="dropdown-menu dropdown-menu-right" id="notification" style="font-size: 0.9em;" aria-labelledby="dropdownNotificationButton">
+            <div class="dropdown-menu dropdown-menu-right" id="notification" style="font-size: 0.9em;"
+                 aria-labelledby="dropdownNotificationButton">
                 {% for userNotification in userNotifications %}
-                    <div style="background-color:rgba(155,174,222,0.5);" class="dropdown-item">
-                        <a class="text-black-50 text-decoration-none" href="{{ path('post_show', {'id': userNotification.post.id}) }}">
+                    <div {% if userNotification.isViewved == 0 %}
+                            style="color: white ; background-color:rgba(155,174,222,0.5);" {% else %}
+                            style="color: black ; background-color: white" {% endif %}class="dropdown-item">
+                        <a class="text-black-50 text-decoration-none"
+                           href="{{ path('post_show', {'id': userNotification.post.id}) }}">
                             {{ userNotification.sender.fullname }} <br> vous a notifié sur une publication</a>
                     </div>
                 {% endfor %}
@@ -75,10 +94,13 @@
         </div>
     </div>
 </nav>
-
 {% if userNotAccepted|length > 0 %}
     <div class="d-flex justify-content-center">
-        <div class="text-center border p-2 w-25 bg-info" style="border-radius: 10px" data-toggle="modal" data-target="#modalFriendPendingTitle">Vous avez
-            actuellement {{ userNotAccepted|length }} demandes en amis</div>
+        <div class="text-center border p-2 w-25 bg-info" style="border-radius: 10px" data-toggle="modal"
+             data-target="#modalFriendPendingTitle">Vous avez
+            actuellement {{ userNotAccepted|length }} demandes en amis
+        </div>
     </div>
 {% endif %}
+{% block javascript %}
+{% endblock %}

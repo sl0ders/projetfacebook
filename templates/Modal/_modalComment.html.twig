@@ -4,9 +4,9 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="#commentModalTitle">Ajout d'un commentaire</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">x</span>
-                </button>
+                <a class="text-decoration-none text-black-50" href="{{ path('home') }}">
+                   <span aria-hidden="true">x</span>
+                </a>
             </div>
             <div class="modal-body">
                 <form action="{{ path('comment_add', {'id': post.id}) }}" method="post">

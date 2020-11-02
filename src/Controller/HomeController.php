@@ -50,7 +50,6 @@ class HomeController extends AbstractController
         }
 
         /** start FormView */
-
         // new search form
         $formSearch = $this->createForm(SearchingType::class);
         $formSearch->handleRequest($request);

@@ -4,9 +4,9 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="modalFriendPendingTitle">Demande d'amis en attente de validation</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <a class="text-decoration-none text-black-50" href="{{ path('home') }}">
                     <span aria-hidden="true">x</span>
-                </button>
+                </a>
             </div>
             <div class="modal-body">
                 {% for userNotPending in userNotAccepted %}

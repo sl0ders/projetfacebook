@@ -37,7 +37,6 @@ class PostController extends abstractController
         $formComment->handleRequest($request);
         $friends = $userRepository->findFriend($this->getUser());
         return $this->render("post/show.html.twig", [
-
             "post" => $post,
             "friends" => $friends,
             "formComment" => $formComment->createView()

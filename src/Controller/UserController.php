@@ -7,6 +7,8 @@ namespace App\Controller;
 use App\Entity\Friendship;
 use App\Entity\User;
 use App\Repository\FriendshipRepository;
+use App\Repository\PostRepository;
+use App\Repository\UserRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
@@ -33,19 +35,25 @@ class UserController extends AbstractController
      * @Route("/show/{id}",name="user_show")
      * @param User $user
      * @param FriendshipRepository $friendshipRepository
+     * @param PostRepository $postRepository
+     * @param UserRepository $userRepository
      * @return Response
      */
-    public function show(User $user, FriendshipRepository $friendshipRepository)
+    public function show(User $user, FriendshipRepository $friendshipRepository, PostRepository $postRepository, UserRepository $userRepository)
     {
         $friendly = false;
         $friendshipExist = $friendshipRepository->findOneBy(["user" => $this->getUser(), "friend" => $user]);
         $usershipExist = $friendshipRepository->findOneBy(["user" => $user, "friend" => $this->getUser()]);
-        if ($friendshipExist or $usershipExist) {
+        $posts = $postRepository->findBy(["author" => $user]);
+          if ($friendshipExist or $usershipExist) {
             $friendly = true;
         }
+        $friends = $userRepository->findFriend($this->getUser());
         return $this->render("user/show.html.twig", [
             "user" => $user,
-            'friendly' => $friendly
+            'friendly' => $friendly,
+            "posts" => $posts,
+            "friends" => $friends
         ]);
     }
 
