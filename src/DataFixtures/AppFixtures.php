@@ -35,7 +35,6 @@ class AppFixtures extends Fixture
     {
         $users = [];
         $posts = [];
-        $comments = [];
         $faker = Factory::create("fr_FR");
         $admin = new User();
         $password = $this->encoder->encodePassword($admin, "258790");
@@ -57,7 +56,7 @@ class AppFixtures extends Fixture
             $user->setAvatar($faker->imageUrl());
             $user->setUpdatedAt(new \DateTime());
             $user->setEmail($faker->email);
-            $user->setPassword($faker->password);
+            $user->setPassword($this->encoder->encodePassword($admin, "258790"));
             $user->setIsValidate($faker->boolean);
             $this->em->persist($user);
             array_push($users, $user);
